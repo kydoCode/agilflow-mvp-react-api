@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const UserStory = require('./userStory');
+const bcrypt = require('bcryptjs');
 
 const User = sequelize.define('User', {
   id: {
@@ -18,7 +19,16 @@ const User = sequelize.define('User', {
     allowNull: false,
     unique: true,
     comment: 'Unique email address of the user',
+    validate: {
+      isEmail: true,
+    }
   },
+password: {
+  type: DataTypes.STRING,
+  allowNull: false,
+  comment: 'Password of the user',
+},
+
   role: {
     type: DataTypes.ENUM('developer', 'product owner', 'tester', 'teammate', 'scrum master', 'administrator'),
     allowNull: false,
@@ -33,5 +43,14 @@ const User = sequelize.define('User', {
     defaultValue: DataTypes.NOW,
   },
 });
+
+User.beforeCreate(async (user) => {
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(user.password, salt);
+});
+
+User.prototype.comparePassword = function(candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
 
 module.exports = User;
