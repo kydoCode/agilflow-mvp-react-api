@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const userStoriesRoutes = require('./routes/userStoriesRoutes');
 const authRoutes = require('./routes/authRoutes');
 const errorHandler = require('./middlewares/errorHandler');
@@ -6,6 +7,27 @@ const errorHandler = require('./middlewares/errorHandler');
 const sequelize = require('./config/database');
 
 const app = express();
+
+// CORS
+
+const whitelist = ['<http://localhost:3000>', '<https://votreapplication.com>'];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Non autorisé par CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  optionsSuccessStatus: 204
+};
+
+app.use('api/public', cors());
+// app.use(cors());
 
 // app.use(logger);
 
