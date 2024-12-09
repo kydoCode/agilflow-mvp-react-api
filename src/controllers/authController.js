@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 require('dotenv').config();
-const jwtSecret = process.env.REACT_APP_JWT_SECRET
+const jwtSecret = process.env.JWT_SECRET
 // const JWT_SECRET = 'votre_secret_jwt'; // À stocker dans les variables d'environnement en production
 
 

@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
-const jwtSecret = process.env.REACT_APP_JWT_SECRET
+const jwtSecret = process.env.JWT_SECRET
 
 const authMiddleware = async (req, res, next) => {
   try {
@@ -11,13 +11,18 @@ const authMiddleware = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, jwtSecret);
+    // Vérifier si le token a expiré
+    if (Date.now() >= decoded.exp * 1000) {
+      return res.status(401).json({ message: 'Token expiré' });
+    }
+
     const user = await User.findByPk(decoded.userId);
 
     if (!user) {
       throw new Error();
     }
 
-    req.user = user;
+    req.user = decoded;
     next();
   } catch (error) {
     res.status(401).json({ message: 'Veuillez vous authentifier' });
