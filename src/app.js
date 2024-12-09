@@ -1,12 +1,44 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const cors = require('cors');
 const userStoriesRoutes = require('./routes/userStoriesRoutes');
 const authRoutes = require('./routes/authRoutes');
 const errorHandler = require('./middlewares/errorHandler');
 // const logger = require('./middlewares/logger');
 const sequelize = require('./config/database');
+const Redis = require('ioredis');
+const { RedisStore } = require('rate-limit-redis');
+const helmet = require('helmet');
+const bodyParser = require('body-parser');
 
 const app = express();
+
+app.use(helmet());
+app.use(bodyParser.json({ limit: '10kb' }));
+
+const redisClient = new Redis({
+  host: 'localhost',
+  port: 6379,
+  retryStrategy: (times) => {
+    const delay = Math.min(times * 50, 2000);
+    return delay;
+  }
+});
+
+redisClient.on('error', (err) => {
+  console.error('Redis connection error:', err);
+});
+
+const limiter = rateLimit({
+  store: new RedisStore({
+    sendCommand: (...args) => redisClient.call(...args),
+  }),
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limite chaque IP à 100 requêtes par fenêtre
+});
+
+// Appliquer à toutes les requêtes
+app.use(limiter);
 
 // CORS
 
@@ -26,7 +58,7 @@ const corsOptions = {
   optionsSuccessStatus: 204
 };
 
-app.use('api/public', cors());
+app.use('/api/public', cors());
 // app.use(cors());
 
 // app.use(logger);
