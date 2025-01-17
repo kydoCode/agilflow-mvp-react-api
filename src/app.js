@@ -42,7 +42,8 @@ app.use(limiter);
 
 // CORS
 
-const whitelist = ['<http://localhost:3000>', '<https://votreapplication.com>'];
+const whitelist = ['http://localhost:3000', 'http://localhost:5173', 'https://votreapplication.com'];
+
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -58,8 +59,10 @@ const corsOptions = {
   optionsSuccessStatus: 204
 };
 
-app.use('/api/public', cors());
+// app.use('/api/public', cors());
 // app.use(cors());
+app.use(cors(corsOptions));
+
 
 // app.use(logger);
 
