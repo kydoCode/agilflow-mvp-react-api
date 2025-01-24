@@ -13,6 +13,13 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
+// Middleware de logging - placé en premier
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  next();
+});
+
+
 app.use(helmet());
 app.use(bodyParser.json({ limit: '10kb' }));
 
@@ -42,7 +49,7 @@ app.use(limiter);
 
 // CORS
 
-const whitelist = ['http://localhost:3000', 'http://localhost:5173', 'https://votreapplication.com'];
+const whitelist = ['http://localhost:3000', 'http://localhost:5173', 'https://www.agilflow.app'];
 
 
 const corsOptions = {

@@ -3,6 +3,7 @@ const { User } = require('../models');
 const jwtSecret = process.env.JWT_SECRET
 
 const authMiddleware = async (req, res, next) => {
+  console.log('Auth middleware called');
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
