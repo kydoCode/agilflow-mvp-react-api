@@ -49,7 +49,7 @@ app.use(limiter);
 
 // CORS
 
-const whitelist = ['http://localhost:3000', 'http://localhost:5173', 'https://www.agilflow.app'];
+const whitelist = ['http://localhost:5173', 'http://localhost:3000', 'https://www.agilflow.app'];
 
 
 const corsOptions = {
@@ -104,4 +104,3 @@ sequelize.sync({force: false, alter: false}).then(() => {
 }).catch((error) => {
   console.error('Unable to sync database:', error);
 });
-
