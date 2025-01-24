@@ -53,3 +53,25 @@ exports.login = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getProfile = async (req, res, next) => {
+  console.log('getProfile function called');
+  try {
+    const user = await User.findByPk(req.user.id, {
+      attributes: { exclude: ['password'] }
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role
+    });
+  } catch (error) {
+    next(error);
+  }
+};
