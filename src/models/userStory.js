@@ -53,6 +53,10 @@ const UserStoryDefinition = (sequelize) => {
                 onDelete: 'SET NULL',
                 onUpdate: 'CASCADE',
         },
+        assignedToId: { // Explicitly define the foreign key column name
+            type: DataTypes.INTEGER,
+            allowNull: true,
+        },
     }, {
         tableName: 'UserStories',
         comment: 'Represents a User Story in the Agile workflow',
