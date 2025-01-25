@@ -1,7 +1,11 @@
 const sequelize = require('../config/database');
-const User = require('./user');
-const UserStory = require('./userStory');
-const UserUserStory = require('./UserUserStory');
+const UserDefinition = require('./user');
+const UserStoryDefinition = require('./userStory');
+const UserUserStoryDefinition = require('./UserUserStory');
+
+const User = UserDefinition(sequelize);
+const UserStory = UserStoryDefinition(sequelize);
+const UserUserStory = UserUserStoryDefinition(sequelize);
 
 const models = {
   sequelize,
@@ -10,33 +14,23 @@ const models = {
   UserUserStory,
 };
 
-User.associate = (models) => {
-    User.hasMany(models.UserStory, {
-      foreignKey: 'assignedTo',
-      as: 'assignedUserStories',
-    });
-    User.belongsToMany(models.UserStory, {
-        through: 'UserUserStory',
-        as: 'userStories',
-        foreignKey: 'userId'
-    });
-  };
-
-UserStory.associate = (models) => {
-    UserStory.belongsTo(models.User, {
-      foreignKey: 'assignedTo',
-      as: 'assignee'
-    });
-    UserStory.belongsToMany(models.User, {
-        through: 'UserUserStory',
-        as: 'users',
-        foreignKey: 'userStoryId'
-    });
-};
-
-
-User.associate(models);
-UserStory.associate(models);
-
+User.hasMany(UserStory, { 
+  foreignKey: 'assignedTo',
+  as: 'assignedUserStories',
+});
+User.belongsToMany(UserStory, { 
+    through: UserUserStory,
+    as: 'userStories',
+    foreignKey: 'userId'
+});
+UserStory.belongsTo(User, { 
+  foreignKey: 'assignedTo',
+  as: 'assignee'
+});
+UserStory.belongsToMany(User, { 
+    through: UserUserStory,
+    as: 'users',
+    foreignKey: 'userStoryId'
+});
 
 module.exports = models;
