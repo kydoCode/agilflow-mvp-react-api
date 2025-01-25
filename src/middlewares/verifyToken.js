@@ -27,7 +27,7 @@ const checkAuthMiddleware = async (req, res, next) => {
         const decoded = jwt.verify(token, JWT_SECRET);
 
         // Récupérer l'utilisateur à partir de l'ID décodé
-        const user = await User.findByPk(decoded.id);
+        const user = await User.findByPk(decoded.userId);
         if (!user) {
             return res.status(401).json({ message: 'Authentification failed' });
         }

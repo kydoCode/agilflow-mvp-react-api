@@ -6,20 +6,22 @@ exports.createUserStory = async (req, res, next) => {
         const { user, action, need, status, priority, assignedTo } = req.body;
         
         // Validate required fields
-        if (!user || !action || !need) {
-        return res.status(400).json({ error: 'User , action, and need are required fields.' });
+        if (!action || !need) {
+        return res.status(400).json({ error: ' action, and need are required fields.' });
         }
         
         const userStory = await UserStory.create({
-            user,
+            assignedToId: req.user.id, // set assignedToId to current user's id
+            assignedTo,
             action,
             need,
-            status: status || 'todo', // Exemple de valeur par défaut pour le statut
-            priority: priority || 'medium', // Exemple de valeur par défaut pour la priorité
-            assignedTo,
+            status: status || 'todo',
+            priority: priority || 'medium',
+            user,
         });
         res.status(201).json(userStory);
     } catch (error) {
+        console.error("Error in getUserStories:", error);
         next(error);
     }
 };
@@ -41,9 +43,14 @@ exports.getUserStoryById = async (req, res, next) => {
 // Récupérer toutes les User Stories
 exports.getUserStories = async (req, res, next) => {
     try {
+        console.log("getUserStories - req.user:", req.user); // Log req.user
+        if (!req.user) {
+            return res.status(401).json({ message: 'User not authenticated' });
+        }
         const userId = req.user.id; // Get user ID from verified token
+        console.log("getUserStories - userId:", userId); // Log userId
         const userStories = await UserStory.findAll({
-            where: { assignedTo: userId }, // Filter stories by assigned user
+            where: { assignedToId: userId }, // Filter stories by assigned user
             include: [{ model: User, as: 'assignee' }],
         });
         res.json(userStories);
@@ -57,7 +64,10 @@ exports.updateUserStory = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const [updated] = await UserStory.update(req.body, {
+        const [updated] = await UserStory.update({
+            ...req.body,
+            assignedToId: req.user.id, // Ensure assignedToId is set during update
+        }, {
             where: { id },
         });
 
