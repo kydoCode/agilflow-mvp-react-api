@@ -33,7 +33,7 @@ exports.createUserStory = async (req, res, next) => {
 exports.getUserStoryById = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const userStory = await UserStory.findByPk(id, { include: [{ model: User, as: 'UsersInvolved' }] });
+        const userStory = await UserStory.findByPk(id, { include: [{ model: User, as: 'assignee' }] });
         if (!userStory) {
             return res.status(404).json({ message: 'User Story not found' });
         }
@@ -54,7 +54,7 @@ exports.getUserStories = async (req, res, next) => {
         console.log("getUserStories - userId:", req.user.id);
         const userStories = await UserStory.findAll({
             // where: { assignedToId: userId }, // Filter stories by assigned user -- not needed anymore
-            include: [{ model: User, as: 'UsersInvolved' }],
+            include: [{ model: User, as: 'assignee' }],
         });
         res.json(userStories);
     } catch (error) {
@@ -77,7 +77,7 @@ exports.updateUserStory = async (req, res, next) => {
         if (!updated) {
             return res.status(404).json({ message: 'User Story not found' });
         }
-        const updatedUserStory = await UserStory.findByPk(id, { include: [{ model: User, as: 'UsersInvolved' }] });
+        const updatedUserStory = await UserStory.findByPk(id, { include: [{ model: User, as: 'assignee' }] });
         res.status(200).json(updatedUserStory);
     } catch (error) {
         next(error);
@@ -95,7 +95,7 @@ exports.deleteUserStory = async (req, res, next) => {
             return res.status(404).json({ message: 'User Story not found' });
         }
         // Fetch the deleted user story with UsersInvolved before returning
-        const deletedUserStory = await UserStory.findByPk(id, { include: [{ model: User, as: 'UsersInvolved' }] });
+        const deletedUserStory = await UserStory.findByPk(id, { include: [{ model: User, as: 'assignee' }] });
 
         // we shall return the deleted user story and message
         res.status(200).json({ message: 'User Story deleted successfully', deletedUserStory });
