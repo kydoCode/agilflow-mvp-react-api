@@ -1,17 +1,24 @@
 const sequelize = require('../config/database');
+const UserUserStory = require('./UserUserStory'); // Import the join table model
 const User = require('./user');
 const UserStory = require('./userStory');
 
-// Define associations after models are imported
-User.belongsToMany(UserStory, { through: 'UserUserStory', as: 'CreatedUserStories', foreignKey: 'userId' });
-UserStory.belongsToMany(User, { through: 'UserUserStory', as: 'UsersInvolved', foreignKey: 'userStoryId' });
 
-User.hasMany(UserStory, { foreignKey: 'assignedTo', as: 'AssignedUserStories' });
-UserStory.belongsTo(User, { foreignKey: 'assignedTo', as: 'Assignee' });
+// Define associations after models are imported
+UserStory.belongsTo(User, {
+  foreignKey: 'assignedTo',
+  as: 'assignee'
+});
+User.hasMany(UserStory, {
+  foreignKey: 'assignedTo',
+  as: 'AssignedUserStories'
+});
+
 
 // Export models
 module.exports = {
   sequelize,
+  UserUserStory, // Export the join table model
   User,
   UserStory,
 };

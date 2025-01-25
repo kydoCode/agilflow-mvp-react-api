@@ -2,11 +2,11 @@ require('dotenv').config();
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const cors = require('cors');
-const userStoriesRoutes = require('./routes/userStoriesRoutes');
-const authRoutes = require('./routes/authRoutes');
-const errorHandler = require('./middlewares/errorHandler');
-// const logger = require('./middlewares/logger');
-const sequelize = require('./config/database');
+const userStoriesRoutes = require('./routes/userStoriesRoutes.js');
+const authRoutes = require('./routes/authRoutes.js');
+const errorHandler = require('./middlewares/errorHandler.js');
+const logger = require('./middlewares/logger.js'); // Ensure logger is imported
+const { sequelize: sequelizeInstance } = require('./models/index.js'); // Import sequelize instance
 const Redis = require('ioredis');
 const { RedisStore } = require('rate-limit-redis');
 const helmet = require('helmet');
@@ -91,18 +91,20 @@ app.get('/', (req, res) => {
 
 
 // Gestion des erreurs globales
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
-});
+// app.use((err, req, res, next) => { // Comment out global error handler - may conflict with sequelize sync errors
+//   console.error(err.stack);
+//   res.status(500).json({ error: 'Something went wrong!' });
+// });
 
-// Démarrer le serveur
+// Sync database and then start server
 const PORT = process.env.PORT || 3000;
-sequelize.sync({ alter: true }).then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+sequelizeInstance.sync({ alter: true })
+  .then(() => {
+    console.log('Database synced successfully');
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  })
+  .catch(error => {
+    console.error('Database sync failed:', error);
   });
-}).catch((error) => {
-  console.error('Unable to sync database with alter: true', error);
-  throw error; // Throw error to see details in terminal
-});

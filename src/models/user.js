@@ -1,6 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const bcrypt = require('bcryptjs');
+const UserStory = require('./userStory'); // Import UserStory model
+const UserUserStory = require('./UserUserStory'); // Import UserUserStory model
 
 const User = sequelize.define('User', {
   id: {

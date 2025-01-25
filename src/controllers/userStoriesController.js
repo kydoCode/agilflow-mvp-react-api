@@ -3,25 +3,28 @@ const { UserStory, User } = require('../models');
 // Créer une User Story
 exports.createUserStory = async (req, res, next) => {
     try {
-        const { user, action, need, status, priority, assignedTo } = req.body;
-        
+        const { action, need, status, priority, userIds } = req.body;
+
         // Validate required fields
         if (!action || !need) {
-        return res.status(400).json({ error: ' action, and need are required fields.' });
+            return res.status(400).json({ error: 'Action and need are required fields.' });
         }
-        
+
         const userStory = await UserStory.create({
-            assignedToId: req.user.id, // set assignedToId to current user's id
-            assignedTo,
             action,
             need,
             status: status || 'todo',
             priority: priority || 'medium',
-            user,
         });
+
+        if (userIds && userIds.length > 0) {
+            const users = await User.findAll({ where: { id: userIds } });
+            await userStory.addUsersInvolved(users);
+        }
+
         res.status(201).json(userStory);
     } catch (error) {
-        console.error("Error in getUserStories:", error);
+        console.error("Error in createUserStory:", error);
         next(error);
     }
 };
@@ -30,7 +33,7 @@ exports.createUserStory = async (req, res, next) => {
 exports.getUserStoryById = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const userStory = await UserStory.findByPk(id, { include: [{ model: User, as: 'Assignee' }] });
+        const userStory = await UserStory.findByPk(id, { include: [{ model: User, as: 'UsersInvolved' }] });
         if (!userStory) {
             return res.status(404).json({ message: 'User Story not found' });
         }
@@ -43,15 +46,15 @@ exports.getUserStoryById = async (req, res, next) => {
 // Récupérer toutes les User Stories
 exports.getUserStories = async (req, res, next) => {
     try {
-        console.log("getUserStories - req.user:", req.user); // Log req.user
+        console.log("getUserStories - req.user:", req.user);
         if (!req.user) {
             return res.status(401).json({ message: 'User not authenticated' });
         }
-        const userId = req.user.id; // Get user ID from verified token
-        console.log("getUserStories - userId:", userId); // Log userId
+        // const userId = req.user.id; // Get user ID from verified token -- not needed anymore
+        console.log("getUserStories - userId:", req.user.id);
         const userStories = await UserStory.findAll({
-            where: { assignedToId: userId }, // Filter stories by assigned user
-            include: [{ model: User, as: 'Assignee' }],
+            // where: { assignedToId: userId }, // Filter stories by assigned user -- not needed anymore
+            include: [{ model: User, as: 'UsersInvolved' }],
         });
         res.json(userStories);
     } catch (error) {
@@ -74,7 +77,7 @@ exports.updateUserStory = async (req, res, next) => {
         if (!updated) {
             return res.status(404).json({ message: 'User Story not found' });
         }
-        const updatedUserStory = await UserStory.findByPk(id);
+        const updatedUserStory = await UserStory.findByPk(id, { include: [{ model: User, as: 'UsersInvolved' }] });
         res.status(200).json(updatedUserStory);
     } catch (error) {
         next(error);
@@ -91,8 +94,11 @@ exports.deleteUserStory = async (req, res, next) => {
         if (!deleted) {
             return res.status(404).json({ message: 'User Story not found' });
         }
+        // Fetch the deleted user story with UsersInvolved before returning
+        const deletedUserStory = await UserStory.findByPk(id, { include: [{ model: User, as: 'UsersInvolved' }] });
+
         // we shall return the deleted user story and message
-        res.status(200).json({ message: 'User Story deleted successfully', deleted });
+        res.status(200).json({ message: 'User Story deleted successfully', deletedUserStory });
         // res.status(204).end();
     } catch (error) {
         next(error);
