@@ -6,7 +6,7 @@ const userStoriesRoutes = require('./routes/userStoriesRoutes.js');
 const authRoutes = require('./routes/authRoutes.js');
 const errorHandler = require('./middlewares/errorHandler.js');
 const logger = require('./middlewares/logger.js'); // Ensure logger is imported
-const { sequelize: sequelizeInstance } = require('./models/index.js'); // Import sequelize instance
+const { sequelize: sequelizeInstance, User, UserStory } = require('./models/index.js'); // Import sequelize instance and models
 const Redis = require('ioredis');
 const { RedisStore } = require('rate-limit-redis');
 const helmet = require('helmet');
@@ -98,8 +98,14 @@ app.get('/', (req, res) => {
 
 // Sync database and then start server
 const PORT = process.env.PORT || 3000;
-sequelizeInstance.sync({ alter: true })
+// Sync User model first, then UserStory
+User.sync()
   .then(() => {
+    console.log('User model synced successfully');
+    return UserStory.sync(); // Sync UserStory after User
+  })
+  .then(() => {
+    console.log('UserStory model synced successfully');
     console.log('Database synced successfully');
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
