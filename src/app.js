@@ -99,10 +99,10 @@ app.get('/', (req, res) => {
 // Sync database and then start server
 const PORT = process.env.PORT || 3000;
 // Sync User model first, then UserStory
-User.sync()
+User.sync({ force: false, alter: false })
   .then(() => {
     console.log('User model synced successfully');
-    return UserStory.sync(); // Sync UserStory after User
+    return UserStory.sync({ force: false, alter: false }); // Sync UserStory after User
   })
   .then(() => {
     console.log('UserStory model synced successfully');
