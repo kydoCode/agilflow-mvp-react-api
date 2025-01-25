@@ -44,4 +44,6 @@ const UserStory = sequelize.define('UserStory', {
   },
 });
 
+// Removing duplicate association definition
+
 module.exports = UserStory;
