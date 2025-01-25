@@ -97,10 +97,10 @@ app.use((err, req, res, next) => {
 
 // Démarrer le serveur
 const PORT = process.env.PORT || 3000;
-sequelize.sync({force: false, alter: false}).then(() => {
+sequelize.sync({ force: true }).then(() => {
   app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
   });
 }).catch((error) => {
-  console.error('Unable to sync database:', error);
+  console.error('Unable to sync database with force: true', error);
 });
