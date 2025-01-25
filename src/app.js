@@ -104,4 +104,5 @@ sequelize.sync({ alter: true }).then(() => {
   });
 }).catch((error) => {
   console.error('Unable to sync database with alter: true', error);
+  throw error; // Throw error to see details in terminal
 });

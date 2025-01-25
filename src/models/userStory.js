@@ -7,11 +7,6 @@ const UserStory = sequelize.define('UserStory', {
     autoIncrement: true,
     primaryKey: true,
   },
-  user: {
-    type: DataTypes.ENUM('developer', 'product owner', 'tester', 'teammate', 'scrum master', 'administrator'),
-    allowNull: false,
-    comment: 'Type of user (e.g., developer, product owner)', 
-  },
   action: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -37,10 +32,6 @@ const UserStory = sequelize.define('UserStory', {
   assignedTo: {
     type: DataTypes.INTEGER,
     allowNull: true,
-    references: {
-      model: 'Users',
-      key: 'id',
-    },
     comment: 'ID of the user assigned to this story',
   },
   createdAt: {

@@ -1,8 +1,7 @@
 const errorHandler = (err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ message: 'Une erreur est survenue sur le serveur' });
+    console.error("Backend error:", err); // Log the entire error object
+    res.status(500).json({ message: 'Une erreur est survenue sur le serveur', error: err.message, stack: err.stack }); // Include error details in response
     next(err);
   };
   
   module.exports = errorHandler;
-  
