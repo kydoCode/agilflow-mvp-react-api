@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const cors = require('cors');
@@ -97,10 +98,10 @@ app.use((err, req, res, next) => {
 
 // Démarrer le serveur
 const PORT = process.env.PORT || 3000;
-sequelize.sync({ force: true }).then(() => {
+sequelize.sync({ alter: true }).then(() => {
   app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
   });
 }).catch((error) => {
-  console.error('Unable to sync database with force: true', error);
+  console.error('Unable to sync database with alter: true', error);
 });
