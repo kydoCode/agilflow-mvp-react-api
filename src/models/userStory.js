@@ -37,23 +37,22 @@ const UserStory = sequelize.define('UserStory', {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
     },
+    assignedTo: { // Explicitly define assignedTo as a column
+        type: DataTypes.INTEGER,
+            allowNull: true, // Or false, depending on requirements
+            references: {
+              model: 'User', // Name of the User model
+              key: 'id',       // Primary key of the User model
+            },
+            onDelete: 'SET NULL', // Or 'CASCADE', 'RESTRICT', etc.
+            onUpdate: 'CASCADE',
+          },
 }, {
     tableName: 'UserStories',
     comment: 'Represents a User Story in the Agile workflow',
 });
 
 
-UserStory.associate = (models) => {
-    UserStory.belongsToMany(models.User, {
-        through: 'UserUserStory', // Name of the join table
-        as: 'UsersInvolved',     // Alias for UserStory.getUsersInvolved(), UserStory.setUsersInvolved(), UserStory.addUsersInvolved(), UserStory.removeUsersInvolved()
-        foreignKey: 'userStoryId', // Foreign key in the UserUserStory table referencing UserStory
-    });
-    UserStory.belongsTo(models.User, {
-      foreignKey: 'assignedTo',
-      as: 'assignee',
-    });
-};
 
 
 module.exports = UserStory;
