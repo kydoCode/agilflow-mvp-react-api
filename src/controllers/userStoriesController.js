@@ -41,8 +41,9 @@ exports.getUserStoryById = async (req, res, next) => {
 // Récupérer toutes les User Stories
 exports.getUserStories = async (req, res, next) => {
     try {
-        console.log('Body:', req.body); // Debug
+        const userId = req.user.id; // Get user ID from verified token
         const userStories = await UserStory.findAll({
+            where: { assignedTo: userId }, // Filter stories by assigned user
             include: [{ model: User, as: 'assignee' }],
         });
         res.json(userStories);
