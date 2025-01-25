@@ -43,6 +43,8 @@ password: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
   },
+}, {
+  tableName: 'User' // Explicitly set table name to 'User'
 });
 
 User.beforeCreate(async (user) => {
