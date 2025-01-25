@@ -30,7 +30,7 @@ exports.createUserStory = async (req, res, next) => {
 exports.getUserStoryById = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const userStory = await UserStory.findByPk(id, { include: [{ model: User, as: 'assignee' }] });
+        const userStory = await UserStory.findByPk(id, { include: [{ model: User, as: 'Assignee' }] });
         if (!userStory) {
             return res.status(404).json({ message: 'User Story not found' });
         }
@@ -51,7 +51,7 @@ exports.getUserStories = async (req, res, next) => {
         console.log("getUserStories - userId:", userId); // Log userId
         const userStories = await UserStory.findAll({
             where: { assignedToId: userId }, // Filter stories by assigned user
-            include: [{ model: User, as: 'assignee' }],
+            include: [{ model: User, as: 'Assignee' }],
         });
         res.json(userStories);
     } catch (error) {
