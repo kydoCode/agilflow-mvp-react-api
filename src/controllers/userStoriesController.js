@@ -54,8 +54,8 @@ exports.getUserStories = async (req, res, next) => {
         console.log("getUserStories - userId:", req.user.id);
         const userId = req.user.id;
         const userStories = await UserStory.findAll({
-            where: { assignedTo: userId }, // Filter stories by assigned user
-            include: [{ model: User, as: 'assignee' }],
+            where: { assignedToId: userId }, // Filter stories by assigned user
+            include: [{ model: User, as: 'assignee', attributes: ['id', 'name', 'role'] }],
         });
         res.json(userStories);
     } catch (error) {
