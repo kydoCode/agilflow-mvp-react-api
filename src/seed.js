@@ -1,12 +1,13 @@
 // require('dotenv').config();
-require('dotenv').config({ path: '../.env' }); // Utiliser le fichier .env du dossier parent -> écris le path
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') }); // Utiliser le fichier .env du dossier parent -> écris le path
 const sequelize = require('./config/database');
 const models = require('./models');
 const User = models.User;
 const UserStory = models.UserStory;
 
 console.log('DB_USER:', process.env.DB_USER);
-console.log('DB_PASSWORD:', process.env.DB_PASSWORD);
+console.log('DB_PASSWORD:', process.env.DB_PASS);
 console.log('DB_NAME:', process.env.DB_NAME);
 
 async function seedDatabase() {
