@@ -43,9 +43,13 @@ const UserStoryDefinition = (sequelize) => {
             allowNull: true, // Role is optional
             comment: 'Role of the user related to the user story',
         },
-        assignedTo: { // Explicitly define the foreign key column name
+        assignedToId: { // Explicitly define the foreign key column name
             type: DataTypes.INTEGER,
             allowNull: true,
+            references: {
+                model: 'User', // Corrected model name to 'User'
+                key: 'id',
+            },
         },
     }, {
         comment: 'Represents a User Story in the Agile workflow',
