@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 require('dotenv').config();
 // const jwtSecret = process.env.JWT_SECRET
-const jwtSecret = 'FrBnT6Lr/JXbQLgVVcSoP3k3ZBacnRubUyXfAlPOk7c='; // À stocker dans les variables d'environnement en production
+const jwtSecret = process.env.JWT_SECRET
 
 
 // exports.register = async (req, res, next) => {
@@ -56,6 +56,8 @@ exports.login = async (req, res, next) => {
 
 exports.getProfile = async (req, res, next) => {
   console.log('getProfile function called');
+  console.log('req.user:', req.user); // Log req.user
+  console.log('req.user.id:', req.user?.id); // Log req.user.id
   try {
     const user = await User.findByPk(req.user.id, {
       attributes: { exclude: ['password'] }
