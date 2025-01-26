@@ -43,17 +43,7 @@ const UserStoryDefinition = (sequelize) => {
             allowNull: true, // Role is optional
             comment: 'Role of the user related to the user story',
         },
-        assignedTo: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-            references: {
-                  model: 'User',
-                  key: 'id',
-                },
-                onDelete: 'SET NULL',
-                onUpdate: 'CASCADE',
-        },
-        assignedToId: { // Explicitly define the foreign key column name
+        assignedTo: { // Explicitly define the foreign key column name
             type: DataTypes.INTEGER,
             allowNull: true,
         },
