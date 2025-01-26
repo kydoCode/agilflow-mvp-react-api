@@ -14,20 +14,20 @@ const models = {
   UserUserStory,
 };
 
-User.hasMany(UserStory, { 
-  foreignKey: 'assignedTo',
+User.hasMany(UserStory, {
+  foreignKey: 'assignedToId',
   as: 'assignedUserStories',
 });
-User.belongsToMany(UserStory, { 
+User.belongsToMany(UserStory, {
     through: UserUserStory,
     as: 'userStories',
     foreignKey: 'userId'
 });
-UserStory.belongsTo(User, { 
-  foreignKey: 'assignedTo',
+UserStory.belongsTo(User, {
+  foreignKey: 'assignedToId',
   as: 'assignee'
 });
-UserStory.belongsToMany(User, { 
+UserStory.belongsToMany(User, {
     through: UserUserStory,
     as: 'users',
     foreignKey: 'userStoryId'
