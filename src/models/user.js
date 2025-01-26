@@ -47,8 +47,14 @@ const UserDefinition = (sequelize) => {
   });
 
   User.beforeCreate(async (user) => {
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt);
+    try {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(user.password, salt);
+      console.log(`Password hashed successfully for user: ${user.email}`); // Add logging
+    } catch (error) {
+      console.error(`Error hashing password for user: ${user.email}`, error); // Add error logging
+      throw error; // Re-throw the error to prevent user creation
+    }
   });
 
   User.prototype.comparePassword = function(candidatePassword) {

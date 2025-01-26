@@ -17,22 +17,32 @@ async function seedDatabase() {
     console.log('Models synced successfully!');
 
     console.log('Creating user John Doe...');
-    const user1 = await User.create({
-      name: 'John Doe',
-      role: 'developer',
-      email: 'john.doe@example.com',
-      password: 'password123', // In real life, hash the password!
-    });
-    console.log('User created:', user1);
+    let user1 = await User.findOne({ where: { email: 'john.doe@example.com' } });
+    if (!user1) {
+      user1 = await User.create({
+        name: 'John Doe',
+        role: 'developer',
+        email: 'john.doe@example.com',
+        password: 'password123', // In real life, hash the password!
+      });
+      console.log('User created:', user1);
+    } else {
+      console.log('User John Doe already exists:', user1.id);
+    }
 
     console.log('Creating user Jane Smith...');
-    const user2 = await User.create({
-      name: 'Jane Smith',
-      role: 'developer',
-      email: 'jane.smith@example.com',
-      password: 'password456', // In real life, hash the password!
-    });
-    console.log('User created:', user2);
+    let user2 = await User.findOne({ where: { email: 'jane.smith@example.com' } });
+    if (!user2) {
+      user2 = await User.create({
+        name: 'Jane Smith',
+        role: 'developer',
+        email: 'jane.smith@example.com',
+        password: 'password456', // In real life, hash the password!
+      });
+      console.log('User created:', user2);
+    } else {
+      console.log('User Jane Smith already exists:', user2.id);
+    }
 
     console.log('Creating user story for user1...');
     const userStory1 = await UserStory.create({
@@ -41,9 +51,10 @@ async function seedDatabase() {
       status: 'todo',
       priority: 'High',
       userId: user1.id,
-      user: 'developer',
+      role: 'developer',
       action: 'log in',
       need: 'access my dashboard',
+      assignedToId: user2.id, 
     });
     console.log('User story created:', userStory1);
 
@@ -54,9 +65,10 @@ async function seedDatabase() {
       status: 'doing',
       priority: 'Medium',
       userId: user2.id,
-      user: 'product owner',
+      role: 'product owner',
       action: 'create a user story',
       need: 'manage my tasks',
+      assignedToId: user1.id,
     });
     console.log('User story created:', userStory2);
 
@@ -64,6 +76,7 @@ async function seedDatabase() {
   } catch (error) {
     console.error('Error seeding database:', error.message);
     console.error('Stack trace:', error.stack);
+    console.error('Full error object:', error); // Log the entire error object for inspection
   } finally {
     console.log('Closing database connection...');
     await sequelize.close();
