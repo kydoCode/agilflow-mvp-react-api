@@ -14,8 +14,8 @@ sequelize.query('SET FOREIGN_KEY_CHECKS = 0')
   .then(() => models.UserStory.drop({ force: true }))
   .then(() => models.User.drop({ force: true }))
   .then(() => sequelize.query('SET FOREIGN_KEY_CHECKS = 1'))
-  .then(() => models.UserStory.sync({ force: true }))
   .then(() => models.User.sync({ force: true }))
+  .then(() => models.UserStory.sync({ force: true }))
   .then(() => models.UserUserStory.sync({ force: true }))
   .then(async () => {
     console.log('Database synced successfully with force: true for all models');

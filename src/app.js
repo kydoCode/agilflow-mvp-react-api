@@ -25,7 +25,7 @@ app.use(helmet());
 app.use(bodyParser.json({ limit: '10kb' }));
 
 const redisClient = new Redis({
-  host: 'localhost',
+  host: '127.0.0.1',
   port: 6379,
   retryStrategy: (times) => {
     const delay = Math.min(times * 50, 2000);
@@ -50,7 +50,7 @@ app.use(limiter);
 
 // CORS
 
-const whitelist = ['http://localhost:5173', 'http://localhost:3000', 'https://www.agilflow.app'];
+const whitelist = ['http://127.0.0.1:5173', 'http://127.0.0.1:3000', 'https://www.agilflow.app'];
 
 
 const corsOptions = {
