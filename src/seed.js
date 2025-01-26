@@ -2,6 +2,8 @@ require('dotenv').config();
 const sequelize = require('./config/database');
 const User = require('./models/user');
 const UserStory = require('./models/userStory');
+console.log(process.env.DB_USER, process.env.DB_PASSWORD, process.env.DB_NAME);
+
 
 async function seedDatabase() {
   try {

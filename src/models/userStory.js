@@ -48,7 +48,6 @@ const UserStoryDefinition = (sequelize) => {
             allowNull: true,
         },
     }, {
-        tableName: 'UserStories',
         comment: 'Represents a User Story in the Agile workflow',
     });
 
