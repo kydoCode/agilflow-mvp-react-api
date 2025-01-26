@@ -15,6 +15,7 @@ exports.createUserStory = async (req, res, next) => {
             need,
             status: status || 'todo',
             priority: priority || 'medium',
+            assignedToId: req.user.id, // Assign user story to the logged-in user
         });
 
         if (userIds && userIds.length > 0) {

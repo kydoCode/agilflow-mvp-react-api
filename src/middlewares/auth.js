@@ -1,36 +1,20 @@
 const jwt = require('jsonwebtoken');
-const { User } = require('../models');
-const jwtSecret = process.env.JWT_SECRET
+const jwtSecret = 'FrBnT6Lr/JXbQLgVVcSoP3k3ZBacnRubUyXfAlPOk7c=';
 
-const authMiddleware = async (req, res, next) => {
-  console.log('Auth middleware called');
-  try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
+const verifyToken = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
 
-    if (!token) {
-      return res.status(401).json({ message: 'Authentification requise' });
-    }
-
-    const decoded = jwt.verify(token, jwtSecret);
-    // Vérifier si le token a expiré
-    if (Date.now() >= decoded.exp * 1000) {
-      return res.status(401).json({ message: 'Token expiré' });
-    }
-
-    const user = await User.findByPk(decoded.userId);
-
-    if (!user) {
-      console.log('Auth middleware: User not found');
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    req.user = user;
-    console.log('Auth middleware: User found and attached to req');
-    next();
-  } catch (error) {
-    console.log('Auth middleware: Authentication error', error);
-    res.status(401).json({ message: 'Veuillez vous authentifier' });
+  if (!token) {
+    return res.status(401).json({ message: 'No token provided.' });
   }
+
+  jwt.verify(token, jwtSecret, (err, decoded) => {
+    if (err) {
+      return res.status(403).json({ message: 'Failed to authenticate token.' });
+    }
+    req.user = decoded;
+    next();
+  });
 };
 
-module.exports = authMiddleware;
+module.exports = verifyToken;

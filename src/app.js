@@ -14,6 +14,15 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
+// Test database connection
+sequelizeInstance.authenticate()
+  .then(() => {
+    console.log('Database connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
+
 // Middleware de logging - placé en premier
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
@@ -50,7 +59,7 @@ app.use(limiter);
 
 // CORS
 
-const whitelist = ['http://127.0.0.1:5173', 'http://127.0.0.1:3000', 'https://www.agilflow.app'];
+const whitelist = ['http://127.0.0.1:5173', 'http://localhost:5173', 'http://127.0.0.1:3000', 'https://www.agilflow.app'];
 
 
 const corsOptions = {
