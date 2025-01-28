@@ -16,7 +16,7 @@ exports.createUserStory = async (req, res, next) => {
             need,
             status: status || 'todo',
             priority: priority || 'medium',
-            assignedToId: req.user.id, // Assign user story to the logged-in user
+            assignedToId: req.user ? req.user.id : null, // Assign user story to the logged-in user if available, otherwise set to null
         });
 
         if (userIds && userIds.length > 0) {
@@ -63,10 +63,11 @@ exports.updateUserStory = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const [updated] = await UserStory.update({
-            ...req.body,
-            assignedToId: req.user.id, // Ensure assignedToId is set during update
-        }, {
+        const updateData = { ...req.body };
+        if (req.user) {
+            updateData.assignedToId = req.user.id; // Only set assignedToId if user is logged in
+        }
+        const [updated] = await UserStory.update(updateData, {
             where: { id },
         });
 
