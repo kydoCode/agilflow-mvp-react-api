@@ -3,7 +3,7 @@ const { UserStory, User } = require('../models');
 // Créer une User Story
 exports.createUserStory = async (req, res, next) => {
     try {
-        const { action, need, status, priority, userIds } = req.body;
+        const { action, need, status, priority, userIds, role } = req.body;
 
         // Validate required fields
         if (!action || !need) {
@@ -11,6 +11,7 @@ exports.createUserStory = async (req, res, next) => {
         }
 
         const userStory = await UserStory.create({
+            role,
             action,
             need,
             status: status || 'todo',
@@ -23,7 +24,7 @@ exports.createUserStory = async (req, res, next) => {
             await userStory.addUsersInvolved(users);
         }
 
-        res.status(201).json(userStory);
+        res.status(201).json({...userStory.toJSON(), id: userStory.id});
     } catch (error) {
         console.error("Error in createUserStory:", error);
         next(error);

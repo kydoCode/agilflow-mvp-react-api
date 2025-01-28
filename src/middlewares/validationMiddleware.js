@@ -1,7 +1,7 @@
 const { body, validationResult } = require('express-validator');
 
 const validateUserStory = [
-  body('user')
+  body('role')
     .isIn(['developer', 'product owner', 'tester', 'teammate', 'scrum master', 'administrator'])
     .withMessage('Type d\'utilisateur invalide'),
   
