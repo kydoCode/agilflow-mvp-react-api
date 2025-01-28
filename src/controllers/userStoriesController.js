@@ -47,15 +47,8 @@ exports.getUserStoryById = async (req, res, next) => {
 // Récupérer toutes les User Stories
 exports.getUserStories = async (req, res, next) => {
     try {
-        console.log("getUserStories - req.user:", req.user);
-        if (!req.user) {
-            return res.status(401).json({ message: 'User not authenticated' });
-        }
-        // const userId = req.user.id; // Get user ID from verified token -- not needed anymore
-        console.log("getUserStories - userId:", req.user.id);
-        const userId = req.user.id;
+        // const userId = req.user.id;
         const userStories = await UserStory.findAll({
-            where: { assignedToId: userId }, // Filter stories by assigned user
             include: [{ model: User, as: 'assignee', attributes: ['id', 'name', 'role'] }],
         });
         res.json(userStories);
