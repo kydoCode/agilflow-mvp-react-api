@@ -10,7 +10,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      UserStory.belongsToMany(models.User, {
+        through: 'UserUserStories',
+        foreignKey: 'userStoryId',
+        otherKey: 'userId'
+      });
     }
   }
   UserStory.init({
@@ -31,29 +35,27 @@ module.exports = (sequelize, DataTypes) => {
     status: {
       type: DataTypes.ENUM('todo', 'doing', 'done'),
       allowNull: false,
-      defaultValue: DataTypes.STRING,
+      defaultValue: 'todo',
       comment: 'Current status of the User Story'
     },
     priority: {
       type: DataTypes.ENUM('low', 'medium', 'high'),
       allowNull: false,
-      defaultValue: DataTypes.STRING,
+      defaultValue: 'medium',
       comment: 'Priority level of the User Story'
     },
     createdAt: {
       type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
+      defaultValue: null,
     },
     updatedAt: {
       type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
+      defaultValue: null,
     }
   }, {
     sequelize,
     modelName: 'UserStories',
-    tableName: 'UserStories' // Correct table name to 'UserStories'
+    tableName: 'UserStories'
   });
   return UserStory;
 };

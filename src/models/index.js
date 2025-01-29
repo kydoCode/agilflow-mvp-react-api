@@ -15,14 +15,16 @@ const db = {};
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-db.User = require('./user')(sequelize);
-db.UserStory = require('./userStory')(sequelize);
-db.UserUserStory = require('./UserUserStory')(sequelize);
+db.User = require('./user');
+db.UserStory = require('./userStory');
+db.UserUserStory = require('./UserUserStory');
 
-Object.values(db).forEach(model => {
-  if (model.associate) {
-    model.associate(db);
-  }
-});
+db.User.initialize(sequelize);
+db.UserStory.initialize(sequelize);
+db.UserUserStory.initialize(sequelize);
+
+db.User.associate(db);
+db.UserStory.associate(db);
+db.UserUserStory.associate(db);
 
 module.exports = db;
