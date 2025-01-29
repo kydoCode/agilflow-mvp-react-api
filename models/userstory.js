@@ -14,16 +14,46 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   UserStory.init({
-    title: DataTypes.STRING,
-    description: DataTypes.TEXT,
-    status: DataTypes.STRING,
-    priority: DataTypes.STRING,
-    storyPoints: DataTypes.INTEGER,
-    acceptanceCriteria: DataTypes.TEXT,
-    assignedToId: DataTypes.INTEGER // Updated to assignedToId
+    action: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      comment: 'What the user wants to do'
+    },
+    need: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      comment: 'Reason or benefit for the action'
+    },
+    role: {
+      type: DataTypes.STRING,
+      comment: 'Role of the user related to the user story'
+    },
+    status: {
+      type: DataTypes.ENUM('todo', 'doing', 'done'),
+      allowNull: false,
+      defaultValue: DataTypes.STRING,
+      comment: 'Current status of the User Story'
+    },
+    priority: {
+      type: DataTypes.ENUM('low', 'medium', 'high'),
+      allowNull: false,
+      defaultValue: DataTypes.STRING,
+      comment: 'Priority level of the User Story'
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    }
   }, {
     sequelize,
-    modelName: 'UserStory',
+    modelName: 'UserStories',
+    tableName: 'UserStories' // Correct table name to 'UserStories'
   });
   return UserStory;
 };

@@ -9,42 +9,44 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      title: {
-        type: Sequelize.STRING
+      action: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        comment: 'What the user wants to do'
       },
-      description: {
-        type: Sequelize.TEXT
+      need: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        comment: 'Reason or benefit for the action'
+      },
+      role: {
+        type: Sequelize.STRING,
+        defaultValue: null,
+        comment: 'Role of the user related to the user story'
       },
       status: {
-        type: Sequelize.STRING
+        type: Sequelize.ENUM('todo', 'doing', 'done'),
+        allowNull: false,
+        defaultValue: 'todo',
+        comment: 'Current status of the User Story'
       },
       priority: {
-        type: Sequelize.STRING
-      },
-      assignedToId: { // Add assignedToId column
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Users', // Corrected model name to 'Users'
-          key: 'id',
-        },
-      },
-      storyPoints: {
-        type: Sequelize.INTEGER
-      },
-      acceptanceCriteria: {
-        type: Sequelize.TEXT
+        type: Sequelize.ENUM('low', 'medium', 'high'),
+        allowNull: false,
+        defaultValue: 'medium',
+        comment: 'Priority level of the User Story'
       },
       createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
       }
     });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('UserStories');
-  }
+  },
 };

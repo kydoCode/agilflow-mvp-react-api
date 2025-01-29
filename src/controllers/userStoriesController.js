@@ -3,10 +3,10 @@ const { sequelize, UserStory: UserStoryModel, User: UserModel, UserUserStory: Us
 exports.createUserStory = async (req, res, next) => {
   try {
     const { action, need, role, priority, status } = req.body;
-    const userStory = await UserStory.create({ action, need, role, priority, status });
+    const userStory = await UserStoryModel.create({ action, need, role, priority, status });
 
     // Associate the user story with the logged-in user
-    await sequelize.models.UserUserStory.create({
+    await UserUserStoryModel.create({
       userId: req.user.id,
       userStoryId: userStory.id,
       role: 'creator', // You can set a default role like 'creator'
@@ -21,7 +21,7 @@ exports.createUserStory = async (req, res, next) => {
 exports.getUserStories = async (req, res, next) => {
     try {
         // Use userId from query parameter if provided, otherwise use authenticated user ID
-        const userId = req.query.userId || req.user.id; 
+        const userId = req.query.userId || req.user.id;
         console.log("Backend - getUserStories - userId:", userId); // Log userId
         const user = await UserModel.findByPk(userId, {
             include: [{
@@ -31,57 +31,7 @@ exports.getUserStories = async (req, res, next) => {
             }]
         });
         console.log("Backend - getUserStories - SQL Query:", user.sequelize.query); // Log SQL query
-const { sequelize, UserStory: UserStoryModel, User: UserModel, UserUserStory: UserUserStoryModel } = require('../models');
 
-exports.createUserStory = async (req, res, next) => {
-  try {
-    const { action, need, role, priority, status } = req.body;
-    const userStory = await UserStory.create({ action, need, role, priority, status });
-
-    // Associate the user story with the logged-in user
-    await sequelize.models.UserUserStory.create({
-      userId: req.user.id,
-      userStoryId: userStory.id,
-      role: 'creator', // You can set a default role like 'creator'
-    });
-
-    res.status(201).json(userStory);
-  } catch (error) {
-    next(error);
-  }
-};
-
-const { sequelize, UserStory: UserStoryModel, User: UserModel, UserUserStory: UserUserStoryModel } = require('../models');
-
-exports.createUserStory = async (req, res, next) => {
-  try {
-    const { action, need, role, priority, status } = req.body;
-    const userStory = await UserStory.create({ action, need, role, priority, status });
-
-    // Associate the user story with the logged-in user
-    await sequelize.models.UserUserStory.create({
-      userId: req.user.id,
-      userStoryId: userStory.id,
-      role: 'creator', // You can set a default role like 'creator'
-    });
-
-    res.status(201).json(userStory);
-  } catch (error) {
-    next(error);
-  }
-};
-
-exports.getUserStories = async (req, res, next) => {
-    try {
-        // Use userId from query parameter if provided, otherwise use authenticated user ID
-        const userId = req.query.userId || req.user.id; 
-        const user = await UserModel.findByPk(userId, {
-            include: [{
-                model: UserStoryModel,
-                as: 'UserStories',
-                through: { attributes: [] }
-            }]
-        });
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -97,8 +47,8 @@ exports.getUserStories = async (req, res, next) => {
 
 exports.getUserStoryById = async (req, res, next) => {
   try {
-    const userStory = await UserStory.findByPk(req.params.id, {
-      include: [{ model: User, as: 'users' }]
+    const userStory = await UserStoryModel.findByPk(req.params.id, {
+      include: [{ model: UserModel, as: 'users' }]
     });
     if (!userStory) {
       return res.status(404).json({ message: 'User story not found' });
@@ -112,12 +62,12 @@ exports.getUserStoryById = async (req, res, next) => {
 exports.updateUserStory = async (req, res, next) => {
   try {
     const { action, need, role, priority, status } = req.body;
-    const userStory = await UserStory.findByPk(req.params.id);
+    const userStory = await UserStoryModel.findByPk(req.params.id);
     if (!userStory) {
       return res.status(404).json({ message: 'User story not found' });
     }
     await userStory.update({ action, need, role, priority, status });
-    const updatedUserStory = await UserStory.findByPk(req.params.id); // Fetch updated story
+    const updatedUserStory = await UserStoryModel.findByPk(req.params.id); // Fetch updated story
     res.json({ message: 'User story updated successfully', userStory: updatedUserStory }); // Return updated story
   } catch (error) {
     next(error);
@@ -126,7 +76,7 @@ exports.updateUserStory = async (req, res, next) => {
 
 exports.deleteUserStory = async (req, res, next) => {
   try {
-    const userStory = await UserStory.findByPk(req.params.id);
+    const userStory = await UserStoryModel.findByPk(req.params.id);
     if (!userStory) {
       return res.status(404).json({ message: 'User story not found' });
     }

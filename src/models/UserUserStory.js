@@ -1,35 +1,35 @@
 const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-module.exports = (sequelize) => {
-  const UserUserStory = sequelize.define('UserUserStory', {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    userId: { // Explicitly define userId foreign key
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'User', // Reference the User model by name
-        key: 'id',   // Reference the User model's primary key
-      }
-    },
-    userStoryId: { // Explicitly define userStoryId foreign key
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'UserStory', // Reference the UserStory model by name
-        key: 'id',      // Reference the UserStory model's primary key
-      }
-    },
-    role: {
-      type: DataTypes.ENUM('assignee', 'creator'),
-      allowNull: false,
-    },
-  }, {
-    tableName: 'users_user_stories', 
-    timestamps: false,
-    underscored: true,
-  });
+const UserUserStory = sequelize.define('UserUserStory', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: true, 
+  },
+  userStoryId: {
+    type: DataTypes.INTEGER,
+    allowNull: true, 
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
+}, {
+  tableName: 'UserUserStories', 
+});
 
-  return UserUserStory;
+UserUserStory.associate = (models) => {
+  UserUserStory.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
+  UserUserStory.belongsTo(models.UserStory, { foreignKey: 'userStoryId', as: 'userStory' });
 };
+
+module.exports = UserUserStory;

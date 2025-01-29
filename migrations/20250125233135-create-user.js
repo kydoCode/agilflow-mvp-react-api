@@ -9,26 +9,38 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      username: {
-        type: Sequelize.STRING
-      },
-      passwordHash: {
-        type: Sequelize.STRING
+      name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        comment: 'Name of the user'
       },
       email: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
+        comment: 'Unique email address of the user'
+      },
+      password: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        comment: 'Password of the user'
+      },
+      role: {
+        type: Sequelize.ENUM('developer', 'product owner', 'tester', 'teammate', 'scrum master', 'administrator'),
+        allowNull: false,
+        comment: 'Role of the user (e.g., developer, product owner)'
       },
       createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
       }
     });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Users');
-  }
+  },
 };
