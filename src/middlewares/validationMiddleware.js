@@ -22,7 +22,14 @@ const validateUserStory = [
     .optional()
     .isIn(['low', 'medium', 'high'])
     .withMessage('Priorité invalide'),
-  
+
+  body('role')
+    .optional()
+    .isString()
+    .trim()
+    .escape()
+    .withMessage('Role must be a string'),
+
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
