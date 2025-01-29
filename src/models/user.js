@@ -61,6 +61,15 @@ const UserDefinition = (sequelize) => {
     return bcrypt.compare(candidatePassword, this.password);
   };
 
+  User.associate = (models) => {
+    User.belongsToMany(models.UserStory, {
+      through: models.UserUserStory,
+      foreignKey: 'userId',
+      otherKey: 'userStoryId',
+      as: 'userStories'
+    });
+  };
+
   return User;
 };
 

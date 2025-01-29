@@ -43,14 +43,6 @@ const UserStoryDefinition = (sequelize) => {
             allowNull: true, // Role is optional
             comment: 'Role of the user related to the user story',
         },
-        assignedToId: { // Explicitly define the foreign key column name
-            type: DataTypes.INTEGER,
-            allowNull: true,
-            references: {
-                model: 'User', // Corrected model name to 'User'
-                key: 'id',
-            },
-        },
     }, {
         comment: 'Represents a User Story in the Agile workflow',
     });
@@ -61,5 +53,14 @@ const UserStoryDefinition = (sequelize) => {
 module.exports = (sequelize) => {
   const UserStory = UserStoryDefinition(sequelize);
 
-  return UserStory; // Return the UserStory model without associations
+    UserStory.associate = (models) => {
+        UserStory.belongsToMany(models.User, {
+            through: models.UserUserStory,
+            foreignKey: 'userStoryId',
+            otherKey: 'userId',
+            as: 'users'
+        });
+    };
+
+  return UserStory;
 };
