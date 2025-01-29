@@ -1,8 +1,9 @@
 'use strict';
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+  async up (queryInterface, Sequelize) {
+    await queryInterface.createTable('User', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -31,16 +32,16 @@ module.exports = {
         comment: 'Role of the user (e.g., developer, product owner)'
       },
       createdAt: {
-        type: Sequelize.DATE,
-        defaultValue: null,
+        allowNull: true,
+        type: Sequelize.DATE
       },
       updatedAt: {
-        type: Sequelize.DATE,
-        defaultValue: null,
+        allowNull: true,
+        type: Sequelize.DATE
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
-  },
+    await queryInterface.dropTable('User');
+  }
 };

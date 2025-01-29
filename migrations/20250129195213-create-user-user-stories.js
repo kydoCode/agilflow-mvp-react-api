@@ -1,7 +1,8 @@
 'use strict';
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up (queryInterface, Sequelize) {
     await queryInterface.createTable('UserUserStories', {
       id: {
         allowNull: false,
@@ -13,28 +14,29 @@ module.exports = {
         type: Sequelize.INTEGER,
         references: {
           model: 'Users', 
-          key: 'id',
+          key: 'id'
         },
+        onDelete: 'CASCADE' 
       },
       userStoryId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'UserStories', 
-          key: 'id',
+          key: 'id'
         },
+        onDelete: 'CASCADE' 
       },
       createdAt: {
-        type: Sequelize.DATE,
         allowNull: false,
+        type: Sequelize.DATE
       },
       updatedAt: {
-        type: Sequelize.DATE,
         allowNull: false,
-      },
+        type: Sequelize.DATE
+      }
     });
   },
-
-  async down(queryInterface, Sequelize) {
+  async down (queryInterface, Sequelize) {
     await queryInterface.dropTable('UserUserStories');
-  },
+  }
 };

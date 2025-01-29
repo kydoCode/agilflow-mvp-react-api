@@ -1,7 +1,8 @@
 'use strict';
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up (queryInterface, Sequelize) {
     await queryInterface.createTable('UserStories', {
       id: {
         allowNull: false,
@@ -19,11 +20,6 @@ module.exports = {
         allowNull: false,
         comment: 'Reason or benefit for the action'
       },
-      role: {
-        type: Sequelize.STRING,
-        defaultValue: null,
-        comment: 'Role of the user related to the user story'
-      },
       status: {
         type: Sequelize.ENUM('todo', 'doing', 'done'),
         allowNull: false,
@@ -36,17 +32,23 @@ module.exports = {
         defaultValue: 'medium',
         comment: 'Priority level of the User Story'
       },
+      role: {
+        type: Sequelize.STRING,
+        comment: 'Role of the user related to the user story'
+      },
       createdAt: {
-        type: Sequelize.DATE,
-        defaultValue: null,
+        allowNull: true,
+        type: Sequelize.DATE
       },
       updatedAt: {
-        type: Sequelize.DATE,
-        defaultValue: null,
+        allowNull: true,
+        type: Sequelize.DATE
       }
+    }, {
+      comment: 'Represents a User Story in the Agile workflow'
     });
   },
-  async down(queryInterface, Sequelize) {
+  async down (queryInterface, Sequelize) {
     await queryInterface.dropTable('UserStories');
-  },
+  }
 };
