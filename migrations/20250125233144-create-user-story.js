@@ -21,14 +21,18 @@ module.exports = {
       priority: {
         type: Sequelize.STRING
       },
+      assignedToId: { // Add assignedToId column
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Users', // Corrected model name to 'Users'
+          key: 'id',
+        },
+      },
       storyPoints: {
         type: Sequelize.INTEGER
       },
       acceptanceCriteria: {
         type: Sequelize.TEXT
-      },
-      assignedTo: {
-        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,

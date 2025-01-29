@@ -1,0 +1,14 @@
+
+> my-express-api@1.0.0 start
+> node src/app.js
+
+Executing (default): SELECT 1+1 AS result
+Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'User' AND TABLE_SCHEMA = 'agilflow_mvp'
+Database connection has been established successfully.
+Executing (default): SHOW INDEX FROM `User`
+User model synced successfully
+Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'UserStories' AND TABLE_SCHEMA = 'agilflow_mvp'
+Executing (default): SHOW INDEX FROM `UserStories`
+UserStory model synced successfully
+Database synced successfully
+Server is running on port 3000

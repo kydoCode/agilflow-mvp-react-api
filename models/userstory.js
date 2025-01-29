@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     priority: DataTypes.STRING,
     storyPoints: DataTypes.INTEGER,
     acceptanceCriteria: DataTypes.TEXT,
-    assignedTo: DataTypes.INTEGER
+    assignedToId: DataTypes.INTEGER // Updated to assignedToId
   }, {
     sequelize,
     modelName: 'UserStory',
