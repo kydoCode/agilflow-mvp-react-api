@@ -20,9 +20,8 @@ exports.createUserStory = async (req, res, next) => {
 
 exports.getUserStories = async (req, res, next) => {
     try {
-        // Use userId from query parameter if provided, otherwise use authenticated user ID
-        const userId = req.query.userId || req.user.id;
-        console.log("Backend - getUserStories - userId:", userId); // Log userId
+        const userId = req.user.id;
+        console.log("Backend - getUserStories - userId:", userId);
         const user = await UserModel.findByPk(userId, {
             include: [{
                 model: UserStoryModel,
@@ -30,8 +29,6 @@ exports.getUserStories = async (req, res, next) => {
                 through: { attributes: [] }
             }]
         });
-        console.log("Backend - getUserStories - SQL Query:", user.sequelize.query); // Log SQL query
-
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });

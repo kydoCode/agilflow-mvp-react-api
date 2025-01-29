@@ -20,9 +20,9 @@ db.User = require('./user');
 db.UserStory = require('./userStory');
 db.UserUserStory = require('./UserUserStory');
 
-db.User.initialize(sequelize, DataTypes); // Pass DataTypes
-db.UserStory.initialize(sequelize, DataTypes); // Pass DataTypes
-db.UserUserStory.initialize(sequelize, DataTypes); // Pass DataTypes
+db.User.initialize(sequelize, DataTypes);
+db.UserStory.initialize(sequelize, DataTypes);
+db.UserUserStory.initialize(sequelize, DataTypes);
 
 db.User.associate(db);
 db.UserStory.associate(db);

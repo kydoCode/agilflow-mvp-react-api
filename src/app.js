@@ -115,6 +115,10 @@ User.sync({ force: false, alter: false })
   })
   .then(() => {
     console.log('UserStory model synced successfully');
+    return UserUserStory.sync({ force: false, alter: false }); // Sync UserUserStory after UserStory
+  })
+  .then(() => {
+    console.log('UserUserStory model synced successfully');
     console.log('Database synced successfully');
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
