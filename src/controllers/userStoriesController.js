@@ -49,10 +49,12 @@ exports.getUserStoryById = async (req, res, next) => {
 exports.getUserStories = async (req, res, next) => {
     try {
         const userId = req.user.id;
+        console.log("Récupération des User Stories pour l'utilisateur ID:", userId);
         const userStories = await UserStory.findAll({
             where: { assignedToId: userId },
             include: [{ model: User, as: 'assignee', attributes: ['id', 'name', 'role'] }],
         });
+        console.log("Retrieved User Stories:", JSON.stringify(userStories, null, 2));
         res.json(userStories);
     } catch (error) {
         next(error);
@@ -63,13 +65,22 @@ exports.getUserStories = async (req, res, next) => {
 exports.updateUserStory = async (req, res, next) => {
     try {
         const { id } = req.params;
+        console.log("Mise à jour de l'User Story ID:", id);
+        console.log("Corps de la requête de mise à jour:", JSON.stringify(req.body));
+        console.log("req.params:", JSON.stringify(req.params));
+        console.log("req.user:", JSON.stringify(req.user));
 
         const [updated] = await UserStory.update(req.body, {
-            where: { id },
+            where: {
+                id: id,
+                assignedToId: req.user.id // Ensure user can only update their own stories
+            },
         });
 
-        if (!updated) {
-            return res.status(404).json({ message: 'User Story not found' });
+        console.log("Update result:", updated); // Log the update result
+
+        if (updated === 0) {
+            return res.status(404).json({ message: 'User Story not found or not owned by user' });
         }
         const updatedUserStory = await UserStory.findByPk(id, { include: [{ model: User, as: 'assignee' }] });
         res.status(200).json(updatedUserStory);
@@ -77,6 +88,7 @@ exports.updateUserStory = async (req, res, next) => {
         next(error);
     }
 };
+
 
 // Supprimer une User Story
 exports.deleteUserStory = async (req, res, next) => {
