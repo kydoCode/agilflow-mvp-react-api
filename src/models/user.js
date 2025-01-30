@@ -1,4 +1,5 @@
 const { DataTypes, Model } = require('sequelize');
+const bcrypt = require('bcrypt');
 
 class User extends Model {
   static initialize(sequelize) {
@@ -41,7 +42,15 @@ class User extends Model {
       sequelize,
       modelName: 'User',
       tableName: 'User',
-      comment: 'Represents a user in the system'
+      comment: 'Represents a user in the system',
+      hooks: {
+        beforeValidate: async (user) => {
+          if (user.password) {
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(user.password, salt);
+          }
+        }
+      }
     });
   }
 
@@ -51,6 +60,10 @@ class User extends Model {
       foreignKey: 'userId',
       otherKey: 'userStoryId'
     });
+  }
+
+  async comparePassword(candidatePassword) {
+    return bcrypt.compare(candidatePassword, this.password);
   }
 }
 

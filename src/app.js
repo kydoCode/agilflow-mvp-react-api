@@ -6,13 +6,15 @@ const userStoriesRoutes = require('./routes/userStoriesRoutes.js');
 const authRoutes = require('./routes/authRoutes.js');
 const errorHandler = require('./middlewares/errorHandler.js');
 const logger = require('./middlewares/logger.js'); // Ensure logger is imported
-const { sequelize: sequelizeInstance, User, UserStory } = require('./models/index.js'); // Import sequelize instance and models
+const { sequelize: sequelizeInstance, User, UserStory, UserUserStory } = require('./models/index.js');
+const db = require('./models/index.js').db;
 const Redis = require('ioredis');
 const { RedisStore } = require('rate-limit-redis');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 
 const app = express();
+
 
 // Test database connection
 sequelizeInstance.authenticate()
@@ -28,7 +30,6 @@ app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
   next();
 });
-
 
 app.use(helmet());
 app.use(bodyParser.json({ limit: '10kb' }));
@@ -115,10 +116,10 @@ User.sync({ force: false, alter: false })
   })
   .then(() => {
     console.log('UserStory model synced successfully');
-    return UserUserStory.sync({ force: false, alter: false }); // Sync UserUserStory after UserStory
+    return db.UserUserStory.sync({ force: false, alter: false }); // Sync UserUserStory after UserStory
   })
   .then(() => {
-    console.log('UserUserStory model synced successfully');
+    console.log('db.UserUserStory model synced successfully');
     console.log('Database synced successfully');
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
