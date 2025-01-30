@@ -20,9 +20,9 @@ exports.createUserStory = async (req, res, next) => {
 
 exports.getUserStories = async (req, res, next) => {
     try {
-        const userId = req.user.id;
-        console.log("Backend - getUserStories - userId:", userId);
-        const user = await UserModel.findByPk(userId, {
+        // const userId = req.user.id; // No need to explicitly get userId, it's already in req.user
+        console.log("Backend - getUserStories - userId:", req.user.id);
+        const user = await UserModel.findByPk(req.user.id, {
             include: [{
                 model: UserStoryModel,
                 as: 'UserStories',
