@@ -48,8 +48,9 @@ exports.getUserStoryById = async (req, res, next) => {
 // Récupérer toutes les User Stories
 exports.getUserStories = async (req, res, next) => {
     try {
-        // const userId = req.user.id;
+        const userId = req.user.id;
         const userStories = await UserStory.findAll({
+            where: { assignedToId: userId },
             include: [{ model: User, as: 'assignee', attributes: ['id', 'name', 'role'] }],
         });
         res.json(userStories);
@@ -63,10 +64,7 @@ exports.updateUserStory = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const [updated] = await UserStory.update({
-            ...req.body,
-            assignedToId: req.user.id, // Ensure assignedToId is set during update
-        }, {
+        const [updated] = await UserStory.update(req.body, {
             where: { id },
         });
 
