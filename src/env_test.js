@@ -1,6 +1,6 @@
 const dotenv = require('dotenv');
 const result = dotenv.config({ path: '[PATH_REDACTED]/gitProjects/06_DWWM/Projects/11/agilflow-mpv-react/agilflow-mvp-react/back/my-express-api/api/.env' });
-
+console.log("env_test.js launched - result:", result);
 if (result.error) {
   console.error("Error loading .env file:", result.error);
 } else {
