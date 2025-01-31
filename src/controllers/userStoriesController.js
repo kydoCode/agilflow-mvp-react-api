@@ -48,15 +48,16 @@ exports.getUserStoryById = async (req, res, next) => {
 // Récupérer toutes les User Stories
 exports.getUserStories = async (req, res, next) => {
     try {
-        const userId = req.user.id;
-        console.log("Récupération des User Stories pour l'utilisateur ID:", userId);
+        const userId = req.user && req.user.id;
+        console.log("getUserStories - userId:", userId);
+        console.log("getUserStories - Filtering for userId:", userId); // Added log
         const userStories = await UserStory.findAll({
             where: { assignedToId: userId },
             include: [{ model: User, as: 'assignee', attributes: ['id', 'name', 'role'] }],
         });
-        console.log("Retrieved User Stories:", JSON.stringify(userStories, null, 2));
         res.json(userStories);
     } catch (error) {
+        console.error("Erreur dans getUserStories:", error);
         next(error);
     }
 };
@@ -65,30 +66,26 @@ exports.getUserStories = async (req, res, next) => {
 exports.updateUserStory = async (req, res, next) => {
     try {
         const { id } = req.params;
-        console.log("Mise à jour de l'User Story ID:", id);
-        console.log("Corps de la requête de mise à jour:", JSON.stringify(req.body));
-        console.log("req.params:", JSON.stringify(req.params));
-        console.log("req.user:", JSON.stringify(req.user));
-
+        console.log("updateUserStory - req.params.id:", id);
+        console.log("updateUserStory - req.user.id:", req.user.id);
         const [updated] = await UserStory.update(req.body, {
             where: {
                 id: id,
-                assignedToId: req.user.id // Ensure user can only update their own stories
+                assignedToId: req.user.id
             },
         });
 
-        console.log("Update result:", updated); // Log the update result
-
         if (updated === 0) {
-            return res.status(404).json({ message: 'User Story not found or not owned by user' });
+            return res.status(404).json({ message: 'User Story non trouvée ou n\'appartenant pas à l\'utilisateur' });
         }
         const updatedUserStory = await UserStory.findByPk(id, { include: [{ model: User, as: 'assignee' }] });
         res.status(200).json(updatedUserStory);
     } catch (error) {
+        console.error("Erreur dans updateUserStory:", error);
+        console.error("Request body:", req.body); // Log request body
         next(error);
     }
 };
-
 
 // Supprimer une User Story
 exports.deleteUserStory = async (req, res, next) => {
